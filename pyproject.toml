@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zte-wrapper"
+version = "0.0.1"
+authors = [
+  { name="ctih1", email="contact@ctih1.fi" },
+]
+description = "A wrapper that lets you interact with the new ZTE WebUI"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/ctih1/zte-wrapper"
+Issues = "https://github.com/ctih1/zte-wrapper/issues"
