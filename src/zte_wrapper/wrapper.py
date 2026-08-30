@@ -1,7 +1,7 @@
 import json
 from typing import Dict, List
 from .authwrapper import ZTEAuthWrapper
-from .types import SMSMessage, PhoneNumber, AuthError, SignalStrength
+from .types import SMSMessage, PhoneNumber, AuthError, SignalStrength, NetworkDetails
 
 
 def utf_16_decode(inp: str) -> str:
@@ -32,7 +32,6 @@ class ZTEWrapper(ZTEAuthWrapper):
 
         jason = json.loads(await res.text())
 
-        print(json.dumps(jason, indent=4))
         if jason.get("sms_data_total") == "" or jason.get("messages") is None:
             raise AuthError("Failed to retrieve data from SMS")
 
@@ -66,7 +65,6 @@ class ZTEWrapper(ZTEAuthWrapper):
         )
 
         jason = json.loads(await res.text())
-        print(jason)
 
         return SignalStrength(
             sinr_5g=float(jason["Z5g_SINR"]),
@@ -80,4 +78,30 @@ class ZTEWrapper(ZTEAuthWrapper):
             rsrp_lte=float(jason["network_lte_rsrp"]),
             rssi_lte=float(jason["lte_rssi"]),
             snr_lte=float(jason["lte_snr"]),
+        )
+
+    async def get_network_details(self) -> NetworkDetails:
+        res = await self.request(
+            "GET",
+            self.construct_url(
+                "goform_get_cmd_process",
+                {
+                    "isTest": "false",
+                    "cmd": "network_provider_fullname,flux_realtime_tx_thrpt,flux_realtime_rx_thrpt,flux_monthly_tx_bytes,flux_monthly_rx_bytes",
+                    "multi_data": "1",
+                    "_": self.get_timestamp(),
+                },
+            ),
+        )
+
+        jason = json.loads(await res.text())
+
+        return NetworkDetails(
+            isp_name=jason["network_provider_fullname"],
+            download_mbps=(float(jason["flux_realtime_rx_thrpt"]) * 8) / (1024 * 1024),
+            upload_mbps=(float(jason["flux_realtime_tx_thrpt"]) * 8) / (1024 * 1024),
+            monthly_download_megabytes=float(jason["flux_monthly_rx_bytes"])
+            / (1024 * 1024),
+            monthly_upload_megabytes=float(jason["flux_monthly_tx_bytes"])
+            / (1024 * 1024),
         )

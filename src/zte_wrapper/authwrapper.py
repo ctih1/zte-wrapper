@@ -84,20 +84,37 @@ class ZTEAuthWrapper:
 
         return self.__auth_code
 
+    async def confirm_auth(self) -> bool:
+        res = await self.request(
+            "GET",
+            self.construct_url(
+                "goform_get_cmd_process",
+                {"isTest": "false", "cmd": "date_month", "_": self.get_timestamp()},
+            ),
+            skip_auth_check=True,
+        )
+
+        return bool(json.loads(await res.text())["date_month"])
+
     async def request(
         self, method: Literal["GET", "POST"], *args, **kwargs
     ) -> aiohttp.ClientResponse:
-        print("REquesting")
         if not self.session:
             self.session = aiohttp.ClientSession()
 
-        await self.refresh_auth()
-
         headers = deepcopy(self.headers)
         headers["Cookie"] = f'stok="{self.__auth_code}"'
-
         print(args, kwargs)
         print(headers)
+
+        if kwargs.get("skip_auth_check"):
+            print("Skipping auth check")
+            del kwargs["skip_auth_check"]
+        else:
+            if not await self.confirm_auth():
+                await self.refresh_auth()
+                headers["Cookie"] = f'stok="{self.__auth_code}"'
+
         if method == "GET":
             res = await self.session.get(*args, **kwargs, headers=headers)
         elif method == "POST":

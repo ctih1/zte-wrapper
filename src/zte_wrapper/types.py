@@ -28,3 +28,12 @@ class SignalStrength:
     rsrp_lte: float
     rssi_lte: float
     snr_lte: float
+
+
+@dataclass
+class NetworkDetails:
+    isp_name: str
+    download_mbps: float
+    upload_mbps: float
+    monthly_download_megabytes: float
+    monthly_upload_megabytes: float
