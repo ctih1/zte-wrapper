@@ -45,7 +45,9 @@ class SmsWrapper:
 
             results[phone_number].append(
                 SMSMessage(
-                    content=utf_16_decode(message["content"]), tag=int(message["tag"])
+                    content=utf_16_decode(message["content"]),
+                    tag=int(message["tag"]),
+                    id=int(message["id"]),
                 )
             )
 
