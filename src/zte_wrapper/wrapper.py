@@ -2,7 +2,15 @@ import json
 from typing import Dict, List
 from datetime import datetime
 from .authwrapper import ZTEAuthWrapper
-from .wrappers import portforwarding, sms, signal, devices, portmapping, ddns
+from .wrappers import (
+    portforwarding,
+    sms,
+    signal,
+    devices,
+    portmapping,
+    ddns,
+    networktools,
+)
 
 
 class ZTEWrapper(ZTEAuthWrapper):
@@ -15,3 +23,4 @@ class ZTEWrapper(ZTEAuthWrapper):
         self.signal = signal.SignalWrapper(self)
         self.devices = devices.DeviceWrapper(self)
         self.ddns = ddns.DDNSWrapper(self)
+        self.network_tools = networktools.NetworkToolWrapper(self)
