@@ -115,3 +115,17 @@ class NetworkToolWrapper:
 
         data = json.loads(await res.text())
         return data["result"] == "success"
+
+    async def reboot_router(self) -> bool:
+        res = await self.auth.request(
+            "POST",
+            self.auth.construct_url("goform_set_cmd_process", {}),
+            data={
+                "isTest": "false",
+                "goformId": "REBOOT_DEVICE",
+                "AD": await self.auth.construct_ad_token(),
+            },
+        )
+
+        data = json.loads(await res.text())
+        return data["result"] == "success"

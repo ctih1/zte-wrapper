@@ -1,9 +1,16 @@
 from dataclasses import dataclass
 from typing import List, Literal, TypedDict
+from datetime import datetime
 
 PhoneNumber = str
 RuleType = Literal["TCP"] | Literal["UDP"] | Literal["TCP&UDP"]
-
+InterfaceType = (
+    Literal["WIFI6"]
+    | Literal["WIFI1"]
+    | Literal["Ethernet"]
+    | Literal["WIFI"]
+    | Literal[""]
+)
 Hostname = TypedDict("Hostname", {"hostname": str, "mac": str})
 
 
@@ -83,7 +90,7 @@ class WirelessStation:  # basically a wireless device
     addr_type: Literal["DHCP"] | str
     connect_time: int
     hostname: str
-    interface_type: Literal["WIFI6"] | str
+    interface_type: InterfaceType
     ip_address: str
     mac_address: str
     mac_bound: bool
@@ -92,7 +99,7 @@ class WirelessStation:  # basically a wireless device
 
 
 @dataclass
-class LanStation:  # basically a wireless device
+class LanStation:
     addr_type: Literal["Static"] | str
     agreed_rate_mbps: int
     connect_time: int
@@ -100,6 +107,17 @@ class LanStation:  # basically a wireless device
     ip_address: str
     mac_address: str
     mac_bound: bool
+
+
+@dataclass
+class OfflineStation:
+    interface_type: InterfaceType
+    offline_time: datetime
+    start_time: datetime
+    start_time_t: datetime
+    hostname: str
+    ip_address: str
+    mac_address: str
 
 
 @dataclass
@@ -117,3 +135,11 @@ class DDNSSettings:
     mode: Literal["auto"] | Literal["manual"]
     enabled: bool
     domain: str
+
+
+@dataclass
+class MacBinding:
+    domain: str | Literal["(null)"]
+    hostname: str | Literal["(null)"]
+    ip: str
+    mac: str

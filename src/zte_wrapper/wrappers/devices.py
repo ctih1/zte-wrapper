@@ -1,7 +1,8 @@
 from ..authwrapper import ZTEAuthWrapper
 import json
-from ..types import WirelessStation, LanStation, Hostname
+from ..types import WirelessStation, LanStation, Hostname, OfflineStation
 from typing import List
+from datetime import datetime
 
 
 class DeviceWrapper:
@@ -102,6 +103,51 @@ class DeviceWrapper:
 
         for hostname in data:
             target_station: LanStation | None = None
+            for station in stations:
+                if station.mac_address != hostname["mac"]:
+                    continue
+                target_station = station
+
+            if not target_station:
+                continue
+
+            target_station.hostname = hostname["hostname"]
+
+        return stations
+
+    async def get_offline_stations(self) -> List[OfflineStation]:
+        res = await self.auth.request(
+            "GET",
+            self.auth.construct_url(
+                "goform_get_cmd_process",
+                {"cmd": "offline_station_list", "isTest": "false"},
+            ),
+        )
+
+        data = json.loads(await res.text())
+
+        stations: List[OfflineStation] = []
+
+        for station in data["offline_station_list"]:
+            stations.append(
+                OfflineStation(
+                    hostname=station["hostname"],
+                    interface_type=station["interface_type"],
+                    ip_address=station["ip_addr"],
+                    mac_address=station["mac_addr"],
+                    offline_time=datetime.fromtimestamp(int(station["offline_time"])),
+                    start_time=datetime.fromtimestamp(int(station["start_time"])),
+                    start_time_t=datetime.fromtimestamp(int(station["start_time_t"])),
+                )
+            )
+        return stations
+
+    async def get_offline_devices(self) -> List[OfflineStation]:
+        stations: List[OfflineStation] = await self.get_offline_stations()
+        data = await self.get_hostnames()
+
+        for hostname in data:
+            target_station: OfflineStation | None = None
             for station in stations:
                 if station.mac_address != hostname["mac"]:
                     continue

@@ -10,6 +10,7 @@ from .wrappers import (
     portmapping,
     ddns,
     networktools,
+    bindings,
 )
 
 
@@ -24,3 +25,4 @@ class ZTEWrapper(ZTEAuthWrapper):
         self.devices = devices.DeviceWrapper(self)
         self.ddns = ddns.DDNSWrapper(self)
         self.network_tools = networktools.NetworkToolWrapper(self)
+        self.bindings = bindings.BindingWrapper(self)
