@@ -20,7 +20,7 @@ Super simple API wrapper for modern ZTE routers using a more advanced authentica
 | Usage statistics                      | ✅      |
 | Firewall (e.g. domain/port filtering) | ❌      |
 | MAC-IP bindings                       | ❌      |
-| DDNS settings                         | ❌      |
+| DDNS settings                         | ✅      |
 | VPN settings                          | ❌      |
 | Debug network tools                   | ❌      |
 | "Preferred position" tools            | ❌*     |

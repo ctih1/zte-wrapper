@@ -56,6 +56,9 @@ class SmsWrapper:
     async def send_sms(
         self, phone_number: str, message: str, tz_offset_hours: int
     ) -> bool:
+        if len(message) > 160:
+            logger.error("Message too long!")
+            return False
         res = await self.auth.request(
             "POST",
             self.auth.construct_url("goform_set_cmd_process", {}),

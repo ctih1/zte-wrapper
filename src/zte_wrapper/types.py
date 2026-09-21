@@ -100,3 +100,20 @@ class LanStation:  # basically a wireless device
     ip_address: str
     mac_address: str
     mac_bound: bool
+
+
+@dataclass
+class DDNSSettings:
+    provider: (
+        Literal["freedns.afraid.org"]
+        | Literal["dyndns.org"]
+        | Literal["zoneedit.org"]
+        | Literal["no-ip.com"]
+        | str
+    )
+    account_username: str
+    account_password: str
+    hash_value: str
+    mode: Literal["auto"] | Literal["manual"]
+    enabled: bool
+    domain: str
