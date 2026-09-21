@@ -1,18 +1,35 @@
 # ZTE-Wrapper
 
-Super simple API wrapper for modern ZTE routers using a more advanced authentication method.
+Super simple API wrapper for modern ZTE routers using a more advanced authentication method. This has only been tested on an MC888B. If you have any feedback, please share!
 
-Available functions:
-- Get SMS messages `get_sms()`
-- Get network throughput, ISP name, etc `get_network_details()`
-- Get network signal strength `get_signal_strength()`
+## Features
+"Support" in this case means that it can be controlled via the library.
 
-## How to add more methods
-`src/zte_wrapper/authwrapper.py` handles authentication and some other things for you. Simply add your implementation of new endpoints to `src/zte_wrapper/wrapper.py` to use them.
+
+| Feature                               | Support |
+| ------------------------------------- | ------- |
+| Create portforward rules              | ✅      |
+| Delete portforward rules              | ✅      |
+| List portforward rules                | ✅      |
+| Send SMS                              | ✅      |
+| Read SMS                              | ✅      |
+| List wireless devices                 | ✅      |
+| List wired devices                    | ✅      |
+| Get signal strength                   | ✅      |
+| Band information                      | ✅      |
+| Usage statistics                      | ✅      |
+| Firewall (e.g. domain/port filtering) | ❌      |
+| MAC-IP bindings                       | ❌      |
+| DDNS settings                         | ❌      |
+| VPN settings                          | ❌      |
+| Debug network tools                   | ❌      |
+| "Preferred position" tools            | ❌*     |
+
+*: Not planning on implementing
+
+The goal is to get all of the other features working. This **shouldn't** be too hard, since the hard work of authentication and such has been already done.
+
 
 ## Notes
 - When referring to "megabytes" or "bytes", they are in base 2 format (e.g. 1Gib = 1024Mib)
-- Authenticating logs off other clients from the web panel. This shouldn't happen that often, as the authentication is only run when required
-
-## Confirmed working devices
-- ZTE MC888
+- Authenticating (aka. running any of the API calls) logs off other clients from the admin web panel.
