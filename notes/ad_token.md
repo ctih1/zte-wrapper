@@ -1,7 +1,8 @@
 some weird ass auth token sent with set_cmd requests sometimes, so fucking cool I finally figured this out
+
 ```
 rd0 = wa_inner_version (from get_cmd)
-rd0 = cr_version (from get_cmd)
+rd1 = cr_version (from get_cmd)
 
 rd0 = MC888B_Nordic1_B14
 rd1 = ""

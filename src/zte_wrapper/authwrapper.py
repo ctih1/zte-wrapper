@@ -1,4 +1,4 @@
-import asyncio
+import logging
 import aiohttp
 from hashlib import sha256
 import urllib.parse
@@ -6,6 +6,8 @@ import time
 import json
 from typing import Literal, Dict, Any, Tuple
 from copy import deepcopy
+
+logger = logging.getLogger("zte")
 
 GOFORM_COMMANDS = Literal["goform_get_cmd_process", "goform_set_cmd_process"]
 HEADERS = {
@@ -44,7 +46,7 @@ class ZTEAuthWrapper:
             {k: urllib.parse.quote(str(v)) for k, v in args.items()}
         )
 
-        print(url)
+        logger.debug(f"Constructed url {url}")
         return url
 
     def get_timestamp(self) -> int:
@@ -60,7 +62,7 @@ class ZTEAuthWrapper:
                 headers=self.headers,
             )
 
-            print("Got LD token")
+            logger.info("Got LD token")
             return json.loads((await res.text())).get(
                 "LD"
             )  # json.loads instead of res.json() because the stupid API returns the stuff as text/html
@@ -77,7 +79,10 @@ class ZTEAuthWrapper:
                 },
             ),
         )
-        data = json.loads(await res.text())
+        res_text = await res.text()
+        logger.debug(f"Retrieved rd0 and rd1: {res_text}")
+
+        data = json.loads(res_text)
         return (data["wa_inner_version"], data["cr_version"])
 
     async def __get_rd_token(self) -> str:
@@ -88,9 +93,10 @@ class ZTEAuthWrapper:
                 {"isTest": "false", "cmd": "RD", "_": self.get_timestamp()},
             ),
         )
+        logger.debug("")
         return json.loads(await res.text())["RD"]
 
-    # please check notes/ad_token.txt if it breaks, it might help you a little
+    # please check notes/tokens.md if it breaks, it might help you a little
     async def construct_ad_token(self) -> str:
         rd0, rd1 = await self.__get_rd0_rd1()
         first_step = zte_sha256_string(rd0 + rd1)
@@ -102,7 +108,7 @@ class ZTEAuthWrapper:
         hashed_password: str = zte_sha256_string(self.__password + ld_token)
 
         async with aiohttp.ClientSession() as session:
-            print("Sending requests")
+            logger.debug("Refreshing authentication")
             res = await session.post(
                 self.construct_url("goform_set_cmd_process", {}),
                 data={
@@ -126,7 +132,10 @@ class ZTEAuthWrapper:
             skip_auth_check=True,
         )
 
-        return bool(json.loads(await res.text())["date_month"])
+        result = bool(json.loads(await res.text())["date_month"])
+        logger.debug(f"Logged in? {result}")
+
+        return result
 
     async def request(
         self, method: Literal["GET", "POST"], *args, **kwargs
@@ -136,11 +145,9 @@ class ZTEAuthWrapper:
 
         headers = deepcopy(self.headers)
         headers["Cookie"] = f'stok="{self.__auth_code}"'
-        print(args, kwargs)
-        print(headers)
 
         if kwargs.get("skip_auth_check"):
-            print("Skipping auth check")
+            logger.debug("Skipping authentication checks...")
             del kwargs["skip_auth_check"]
         else:
             if not await self.confirm_auth():
@@ -155,5 +162,6 @@ class ZTEAuthWrapper:
         return res
 
     async def close(self) -> None:
+        logger.info("Closign aiohttp client")
         if self.session:
             await self.session.close()

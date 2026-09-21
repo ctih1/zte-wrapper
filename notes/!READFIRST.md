@@ -1,0 +1,1 @@
+Please note that ZTE's SHA256 function returns the output as uppercase hex, not lowercase

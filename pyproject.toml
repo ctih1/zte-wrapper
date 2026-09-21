@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zte-wrapper"
-version = "0.0.1"
+version = "1.0.0"
 authors = [
   { name="ctih1", email="contact@ctih1.fi" },
 ]
