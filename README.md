@@ -30,6 +30,23 @@ Super simple API wrapper for modern ZTE routers using a more advanced authentica
 
 The goal is to get all of the other features working. This **shouldn't** be too hard, since the hard work of authentication and such has been already done.
 
+<details>
+<summary>Features as overlayed on web panel</summary>
+
+(based on commit a7baa3b)
+
+
+![Network tab](screenshots/network.png)
+![WiFi tab](screenshots/wifi.png)
+![Devices tab](screenshots/devices.png)
+![Data usage tab](screenshots/datausage.png)
+![Router tab](screenshots/router.png)
+![SMS tab](screenshots/sms.png)
+![Security tab](screenshots/security.png)
+![System tab](screenshots/system.png)
+
+</details>
+
 ## Roadmap
 ~~1. Implement DDNS-settings~~
 2. Publish onto PyPI
