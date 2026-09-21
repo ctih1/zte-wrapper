@@ -1,6 +1,8 @@
 from dataclasses import dataclass
+from typing import List, Literal
 
 PhoneNumber = str
+RuleType = Literal["TCP"] | Literal["UDP"] | Literal["TCP&UDP"]
 
 
 class AuthError(Exception):
@@ -37,3 +39,20 @@ class NetworkDetails:
     upload_mbps: float
     monthly_download_megabytes: float
     monthly_upload_megabytes: float
+
+
+@dataclass
+class PortforwardingRule:
+    ip_addr: str
+    comment: str
+    port_start: int
+    port_end: int
+    protocol: RuleType
+
+
+@dataclass
+class PortforwardingTable:
+    gateway_addr: str
+    enabled: bool
+    rules_amount: int
+    rules: List[PortforwardingRule]

@@ -1,7 +1,16 @@
 import json
 from typing import Dict, List
 from .authwrapper import ZTEAuthWrapper
-from .types import SMSMessage, PhoneNumber, AuthError, SignalStrength, NetworkDetails
+from .types import (
+    SMSMessage,
+    PhoneNumber,
+    AuthError,
+    SignalStrength,
+    NetworkDetails,
+    PortforwardingRule,
+    PortforwardingTable,
+    RuleType,
+)
 
 
 def utf_16_decode(inp: str) -> str:
@@ -11,6 +20,70 @@ def utf_16_decode(inp: str) -> str:
 class ZTEWrapper(ZTEAuthWrapper):
     def __init__(self, webui_address: str, password: str) -> None:
         super().__init__(webui_address, password)
+
+    async def get_port_forwarding_rules(self) -> PortforwardingTable:
+        res = await self.request(
+            "GET",
+            self.construct_url(
+                "goform_get_cmd_process",
+                {
+                    "isTest": "false",
+                    "cmd": "lan_ipaddr,PortForwardEnable,portforward_rule_num,PortForwardRules_0,PortForwardRules_1,PortForwardRules_2,PortForwardRules_3,PortForwardRules_4,PortForwardRules_5,PortForwardRules_6,PortForwardRules_7,PortForwardRules_8,PortForwardRules_9,PortForwardRules_10,PortForwardRules_11,PortForwardRules_12,PortForwardRules_13,PortForwardRules_14,PortForwardRules_15,PortForwardRules_16,PortForwardRules_17,PortForwardRules_18,PortForwardRules_19,PortForwardRules_20,PortForwardRules_21,PortForwardRules_22,PortForwardRules_23,PortForwardRules_24,PortForwardRules_25,PortForwardRules_26,PortForwardRules_27,PortForwardRules_28,PortForwardRules_29",
+                    "multi_data": "1",
+                },
+            ),
+        )
+
+        data: dict = json.loads(await res.text())
+        rules: List[PortforwardingRule] = []
+
+        for k, v in data.items():
+            k: str = k
+            v: str = str(v)
+
+            if k.startswith("PortForwardRules_") and len(v) != 0:
+                ip, from_port, to_port, protocol_int_str, comment = v.split(",")
+                protocol_int: int = int(protocol_int_str)
+                protocol: RuleType = "TCP&UDP"
+                if protocol_int == 1:
+                    protocol = "TCP"
+                elif protocol_int == 2:
+                    protocol = "UDP"
+
+                rules.append(
+                    PortforwardingRule(
+                        ip_addr=ip,
+                        comment=comment,
+                        port_start=int(from_port),
+                        port_end=int(to_port),
+                        protocol=protocol,
+                    )
+                )
+
+        return PortforwardingTable(
+            gateway_addr=data["lan_ipaddr"],
+            enabled=data["PortForwardEnable"] == "1",
+            rules_amount=int(data["portforward_rule_num"]),
+            rules=rules,
+        )
+
+    async def set_portforwarding_rule(self, rule: PortforwardingRule) -> None:
+        res = await self.request(
+            "POST",
+            self.construct_url("goform_set_cmd_process", {}),
+            data={
+                "isTest": "false",
+                "goformId": "FW_FORWARD_ADD",
+                "ipAddress": rule.ip_addr,
+                "portStart": rule.port_start,
+                "portEnd": rule.port_end,
+                "protocol": rule.protocol,
+                "comment": rule.comment,
+                "AD": await self.construct_ad_token(),
+            },
+        )
+
+        print(json.dumps(json.loads(await res.text()), indent=4))
 
     async def get_sms(self) -> Dict[PhoneNumber, List[SMSMessage]]:
         res = await self.request(

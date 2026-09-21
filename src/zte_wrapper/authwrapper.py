@@ -4,7 +4,7 @@ from hashlib import sha256
 import urllib.parse
 import time
 import json
-from typing import Literal, Dict, Any
+from typing import Literal, Dict, Any, Tuple
 from copy import deepcopy
 
 GOFORM_COMMANDS = Literal["goform_get_cmd_process", "goform_set_cmd_process"]
@@ -64,6 +64,38 @@ class ZTEAuthWrapper:
             return json.loads((await res.text())).get(
                 "LD"
             )  # json.loads instead of res.json() because the stupid API returns the stuff as text/html
+
+    async def __get_rd0_rd1(self) -> Tuple[str, str]:
+        res = await self.request(
+            "GET",
+            self.construct_url(
+                "goform_get_cmd_process",
+                {
+                    "isTest": "false",
+                    "cmd": "cr_version,wa_inner_version",
+                    "multi_data": "1",
+                },
+            ),
+        )
+        data = json.loads(await res.text())
+        return (data["wa_inner_version"], data["cr_version"])
+
+    async def __get_rd_token(self) -> str:
+        res = await self.request(
+            "GET",
+            self.construct_url(
+                "goform_get_cmd_process",
+                {"isTest": "false", "cmd": "RD", "_": self.get_timestamp()},
+            ),
+        )
+        return json.loads(await res.text())["RD"]
+
+    # please check notes/ad_token.txt if it breaks, it might help you a little
+    async def construct_ad_token(self) -> str:
+        rd0, rd1 = await self.__get_rd0_rd1()
+        first_step = zte_sha256_string(rd0 + rd1)
+        rd_token = await self.__get_rd_token()
+        return zte_sha256_string(first_step + rd_token)
 
     async def refresh_auth(self) -> str:
         ld_token: str = await self.__get_ld()
