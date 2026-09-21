@@ -62,11 +62,16 @@ The goal is to get all of the other features working. This **shouldn't** be too 
 </details>
 
 ## Roadmap
-~~1. Implement DDNS-settings~~
+1. ~~Implement DDNS-settings~~
+
 2. Publish onto PyPI
+
 3. More reliable error handling
+
 4. Implement rest of the features
+
 5. Implement better documentation
+
 6. Write tests
 
 ## Notes
