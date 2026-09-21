@@ -29,6 +29,13 @@ Super simple API wrapper for modern ZTE routers using a more advanced authentica
 
 The goal is to get all of the other features working. This **shouldn't** be too hard, since the hard work of authentication and such has been already done.
 
+## Roadmap
+1. Implement DDNS-settings
+2. Publish onto PyPI
+3. More reliable error handling
+4. Implement rest of the features
+5. Implement better documentation
+6. Write tests
 
 ## Notes
 - When referring to "megabytes" or "bytes", they are in base 2 format (e.g. 1Gib = 1024Mib)
