@@ -15,6 +15,7 @@ class AuthError(Exception):
 class SMSMessage:
     content: str
     tag: int
+    id: int
 
 
 @dataclass
