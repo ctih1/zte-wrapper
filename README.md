@@ -1,6 +1,6 @@
 # ZTE-Wrapper
 
-Super simple API wrapper for modern ZTE routers using a more advanced authentication method. This has only been tested on an MC888B. If you have any feedback, please share!
+An API wrapper for modern ZTE routers using a more advanced authentication method. This has only been tested on an MC888B. If you have any feedback, please share!
 
 ## Features
 "Support" in this case means that it can be controlled via the library.
