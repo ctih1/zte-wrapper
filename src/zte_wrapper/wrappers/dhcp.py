@@ -34,18 +34,18 @@ class DHCPWrapper:
             mac_addr=data["mac_address"],
             mtu=int(data["mtu"]),
             tcp_mss=int(data["tcp_mss"]),
-            dhcp_type=data["lanDhcpType"],
+            dhcp_type=data["lanDhcpType"] or "SERVER",
             lease_time_hours=int(data["dhcpLease_hour"]),
         )
 
     async def set_settings(
-        self, settings: DHCPSettings, reboot: int = 1
+        self, settings: DHCPSettings, reboot: bool = False
     ) -> Tuple[bool, bool]:
         """Updates both DHCP and MTU settings
 
         Args:
             settings (DHCPSettings): settings object
-            reboot (int, optional): Whether to reboot. Defaults to 1.
+            reboot (bool, optional): Whether to reboot. Defaults to False.
 
         Returns:
             Tuple[bool, bool]: whether (DHCP, MTU) settings were applied successfully
@@ -61,7 +61,7 @@ class DHCPWrapper:
                 "lanDhcpType": settings.dhcp_type,
                 "dhcpStart": settings.start_ip,
                 "dhcpLease": settings.lease_time_hours,
-                "dhcp_reboot_flag": reboot,
+                "dhcp_reboot_flag": int(reboot),
                 "mac_ip_reset": "0",
                 "AD": await self.auth.construct_ad_token(),
             },

@@ -19,7 +19,7 @@ Super simple API wrapper for modern ZTE routers using a more advanced authentica
 | Band information                      | ✅      |
 | Usage statistics                      | ✅      |
 | Firewall (e.g. domain/port filtering) | ❌      |
-| DHCP Settings                         | ❌      |
+| DHCP Settings                         | ✅      |
 | MAC-IP bindings                       | ✅      |
 | DDNS settings                         | ✅      |
 | VPN settings                          | ❌      |
@@ -28,7 +28,6 @@ Super simple API wrapper for modern ZTE routers using a more advanced authentica
 
 *: Not planning on implementing
 
-The goal is to get all of the other features working. This **shouldn't** be too hard, since the hard work of authentication and such has been already done.
 
 <details>
 <summary>Features as overlayed on web panel</summary>

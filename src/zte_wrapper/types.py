@@ -11,12 +11,38 @@ InterfaceType = (
     | Literal["WIFI"]
     | Literal[""]
 )
+FirewallProtocolTarget = (
+    Literal["TCP"] | Literal["UDP"] | Literal["ICMP"] | Literal["ALL"]
+)
+FirewallAction = Literal["DROP"] | Literal["ACCEPT"]
 Hostname = TypedDict("Hostname", {"hostname": str, "mac": str})
 AutoOrManual = Literal["auto"] | Literal["manual"]
 
 
 class AuthError(Exception):
     pass
+
+
+class PortRange:
+    start: int
+    end: int
+    iter: int
+
+    def __init__(self, start: int, end: int):
+        self.start = start
+        self.end = end
+
+    def __iter__(self):
+        self.iter = self.start
+        return self
+
+    def __next__(self):
+        if self.iter > self.end:
+            raise StopIteration
+
+        val = self.iter
+        self.iter += 1
+        return val
 
 
 @dataclass
@@ -183,3 +209,25 @@ class DHCPSettings:
     mac_addr: str
     mtu: int
     tcp_mss: int
+
+
+@dataclass
+class FirewallRule:
+    mac_addr: str
+    source_ip: str
+    dest_ip: str
+    protocol: FirewallProtocolTarget
+
+    source_port: PortRange
+    dest_port: PortRange
+
+    action: FirewallAction
+    comment: str
+
+
+@dataclass
+class FirewallConfig:
+    default_policy: FirewallAction
+    enabled: bool
+    rules_ipv4: List[FirewallRule]
+    rules_ipv6: List[FirewallRule]
