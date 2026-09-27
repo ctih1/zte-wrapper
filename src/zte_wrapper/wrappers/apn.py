@@ -1,5 +1,4 @@
 import json
-from typing import List
 
 from ..authwrapper import ZTEAuthWrapper
 from ..types import APNProfile, APNSettings
@@ -40,7 +39,7 @@ class APNWrapper:
             ]
         )
 
-        profiles: List[APNProfile] = []
+        profiles: list[APNProfile] = []
 
         for k, v in data.items():
             if k.startswith(("ipv6_APN_config", "APN_config")):

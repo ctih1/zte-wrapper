@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Literal, TypedDict
+from typing import Literal, TypedDict
 
 PhoneNumber = str
 RuleType = Literal["TCP", "UDP", "TCP&UDP"]
@@ -83,7 +85,7 @@ class PortforwardingTable:
     gateway_addr: str
     enabled: bool
     rules_amount: int
-    rules: List[PortforwardingRule]
+    rules: list[PortforwardingRule]
 
 
 @dataclass
@@ -100,7 +102,7 @@ class PortmappingTable:
     gateway_addr: str
     enabled: bool
     rules_amount: int
-    rules: List[PortmappingRule]
+    rules: list[PortmappingRule]
 
 
 @dataclass
@@ -181,7 +183,7 @@ class APNSettings:
     dns_mode: AutoOrManual
     prefer_dns_manual: str  # find later
     standby_dns_manual: str  # find later x2
-    profiles: List[APNProfile]
+    profiles: list[APNProfile]
 
 
 @dataclass
@@ -216,5 +218,5 @@ class FirewallRule:
 class FirewallConfig:
     default_policy: FirewallAction
     enabled: bool
-    rules_ipv4: List[FirewallRule]
-    rules_ipv6: List[FirewallRule]
+    rules_ipv4: list[FirewallRule]
+    rules_ipv6: list[FirewallRule]

@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 from ..authwrapper import ZTEAuthWrapper
 from ..types import Hostname, LanStation, OfflineStation, WirelessStation
@@ -9,10 +8,10 @@ class DeviceWrapper:
     def __init__(self, auth: ZTEAuthWrapper):
         self.auth = auth
 
-    async def get_wlan_station_list(self) -> List[WirelessStation]:
+    async def get_wlan_station_list(self) -> list[WirelessStation]:
         data = await self.auth.query_items(["station_list"])
 
-        stations: List[WirelessStation] = []
+        stations: list[WirelessStation] = []
 
         for station in data["station_list"]:
             stations.append(
@@ -30,12 +29,12 @@ class DeviceWrapper:
             )
         return stations
 
-    async def get_hostnames(self) -> List[Hostname]:
+    async def get_hostnames(self) -> list[Hostname]:
         data = await self.auth.query_items(["hostNameList"])
 
         return data["devices"]
 
-    async def get_wlan_devices(self) -> List[WirelessStation]:
+    async def get_wlan_devices(self) -> list[WirelessStation]:
         """Same as `get_station_list`, but uses the correct hostname
 
         Returns:
@@ -58,10 +57,10 @@ class DeviceWrapper:
 
         return stations
 
-    async def get_lan_station_list(self) -> List[LanStation]:
+    async def get_lan_station_list(self) -> list[LanStation]:
         data = await self.auth.query_items(["lan_station_list"])
 
-        stations: List[LanStation] = []
+        stations: list[LanStation] = []
 
         for station in data["lan_station_list"]:
             stations.append(
@@ -77,8 +76,8 @@ class DeviceWrapper:
             )
         return stations
 
-    async def get_lan_devices(self) -> List[LanStation]:
-        stations: List[LanStation] = await self.get_lan_station_list()
+    async def get_lan_devices(self) -> list[LanStation]:
+        stations: list[LanStation] = await self.get_lan_station_list()
         data = await self.get_hostnames()
 
         for hostname in data:
@@ -95,9 +94,9 @@ class DeviceWrapper:
 
         return stations
 
-    async def get_offline_stations(self) -> List[OfflineStation]:
+    async def get_offline_stations(self) -> list[OfflineStation]:
         data = await self.auth.query_items(["offline_station_list"])
-        stations: List[OfflineStation] = []
+        stations: list[OfflineStation] = []
 
         for station in data["offline_station_list"]:
             stations.append(
@@ -113,8 +112,8 @@ class DeviceWrapper:
             )
         return stations
 
-    async def get_offline_devices(self) -> List[OfflineStation]:
-        stations: List[OfflineStation] = await self.get_offline_stations()
+    async def get_offline_devices(self) -> list[OfflineStation]:
+        stations: list[OfflineStation] = await self.get_offline_stations()
         data = await self.get_hostnames()
 
         for hostname in data:

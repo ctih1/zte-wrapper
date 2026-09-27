@@ -1,5 +1,4 @@
 import json
-from typing import Tuple
 
 from ..authwrapper import ZTEAuthWrapper
 from ..types import DHCPSettings
@@ -40,7 +39,7 @@ class DHCPWrapper:
 
     async def set_settings(
         self, settings: DHCPSettings, reboot: bool = False
-    ) -> Tuple[bool, bool]:
+    ) -> tuple[bool, bool]:
         """Updates both DHCP and MTU settings
 
         Args:

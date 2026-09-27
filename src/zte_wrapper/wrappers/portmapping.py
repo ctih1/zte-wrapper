@@ -1,5 +1,4 @@
 import json
-from typing import List
 
 from ..authwrapper import ZTEAuthWrapper
 from ..types import PortmappingRule, PortmappingTable, RuleType
@@ -19,7 +18,7 @@ class PortmappingWrapper:
             ]
         )
 
-        rules: List[PortmappingRule] = []
+        rules: list[PortmappingRule] = []
 
         for k, v in data.items():
             k: str = k
@@ -71,7 +70,7 @@ class PortmappingWrapper:
         data = json.loads(await res.text())
         return data["result"] == "success"
 
-    async def delete_portmapping_rules(self, indices: List[int]) -> bool:
+    async def delete_portmapping_rules(self, indices: list[int]) -> bool:
         res = await self.auth.request(
             "POST",
             self.auth.construct_url("goform_set_cmd_process", {}),

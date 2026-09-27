@@ -4,7 +4,7 @@ import time
 import urllib.parse
 from copy import deepcopy
 from hashlib import sha256
-from typing import Any, Dict, List, Literal, Tuple
+from typing import Any, Literal
 
 import aiohttp
 
@@ -40,7 +40,7 @@ class ZTEAuthWrapper:
 
         self.session: aiohttp.ClientSession | None = None
 
-    def construct_url(self, command: GOFORM_COMMANDS, args: Dict[str, Any]) -> str:
+    def construct_url(self, command: GOFORM_COMMANDS, args: dict[str, Any]) -> str:
         base_url = f"http://{self.address}/goform/{command}/?"
 
         url = base_url + urllib.parse.urlencode(
@@ -70,7 +70,7 @@ class ZTEAuthWrapper:
                 "LD"
             )  # json.loads instead of res.json() because the stupid API returns the stuff as text/html
 
-    async def __get_rd0_rd1(self) -> Tuple[str, str]:
+    async def __get_rd0_rd1(self) -> tuple[str, str]:
         res = await self.request(
             "GET",
             self.construct_url(
@@ -164,7 +164,7 @@ class ZTEAuthWrapper:
 
         return res
 
-    async def query_items(self, items: List[str]) -> dict:
+    async def query_items(self, items: list[str]) -> dict:
         res = await self.request(
             "GET",
             self.construct_url(

@@ -1,5 +1,4 @@
 import json
-from typing import List
 
 from ..authwrapper import ZTEAuthWrapper
 from ..types import MacBinding
@@ -9,10 +8,10 @@ class BindingWrapper:
     def __init__(self, auth: ZTEAuthWrapper):
         self.auth = auth
 
-    async def get_mac_bindings(self) -> List[MacBinding]:
+    async def get_mac_bindings(self) -> list[MacBinding]:
         data = await self.auth.query_items(["current_static_addr_list"])
 
-        bindings: List[MacBinding] = []
+        bindings: list[MacBinding] = []
 
         for binding in data["current_static_addr_list"]:
             bindings.append(

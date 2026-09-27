@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import json
-from typing import List, Literal
+from typing import Literal
 
 from ..authwrapper import ZTEAuthWrapper
 from ..types import FirewallConfig, FirewallProtocolTarget, FirewallRule, PortRange
@@ -19,8 +21,8 @@ class FirewallWrapper:
             ]
         )
 
-        rules: List[FirewallRule] = []
-        rules_ipv6: List[FirewallRule] = []
+        rules: list[FirewallRule] = []
+        rules_ipv6: list[FirewallRule] = []
 
         for k, v in data.items():
             if k.startswith("IPPortFilterRules") and len(v) > 2:
@@ -78,8 +80,8 @@ class FirewallWrapper:
 
     async def delete_rules(
         self,
-        rule_ipv4_indices: List[int] | None = None,
-        rule_ipv6_indices: List[int] | None = None,
+        rule_ipv4_indices: list[int] | None = None,
+        rule_ipv6_indices: list[int] | None = None,
     ) -> bool:
         res = await self.auth.request(
             "POST",
