@@ -1,4 +1,3 @@
-import json
 
 from ..authwrapper import ZTEAuthWrapper
 from ..types import NetworkDetails, SignalStrength

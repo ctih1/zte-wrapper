@@ -1,6 +1,5 @@
 import json
-from datetime import datetime
-from typing import List, Literal, Tuple
+from typing import List, Literal
 
 from ..authwrapper import ZTEAuthWrapper
 from ..types import FirewallConfig, FirewallProtocolTarget, FirewallRule, PortRange
@@ -106,7 +105,7 @@ class FirewallWrapper:
         return data["result"] == "success"
 
     async def add_rule(
-        self, ip_type: Literal["ipv4"] | Literal["ipv6"], rule: FirewallRule
+        self, ip_type: Literal["ipv4", "ipv6"], rule: FirewallRule
     ) -> bool:
         d = {
             "isTest": "false",

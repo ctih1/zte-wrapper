@@ -1,7 +1,6 @@
-from ..authwrapper import ZTEAuthWrapper
 import json
-from ..types import PortforwardingRule, PortforwardingTable, RuleType
-from typing import List
+
+from ..authwrapper import ZTEAuthWrapper
 
 
 class NetworkToolWrapper:

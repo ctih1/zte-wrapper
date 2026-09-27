@@ -1,6 +1,5 @@
 import json
-from datetime import datetime
-from typing import List, Tuple
+from typing import Tuple
 
 from ..authwrapper import ZTEAuthWrapper
 from ..types import DHCPSettings

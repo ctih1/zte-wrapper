@@ -1,9 +1,10 @@
-from ..authwrapper import ZTEAuthWrapper
 import json
-from ..types import PhoneNumber, SMSMessage, AuthError
-from ..helpers import utf_16_encode, utf_16_decode, get_zte_timestring
-from typing import List, Dict
 import logging
+from typing import Dict, List
+
+from ..authwrapper import ZTEAuthWrapper
+from ..helpers import get_zte_timestring, utf_16_decode, utf_16_encode
+from ..types import PhoneNumber, SMSMessage
 
 logger = logging.getLogger("zte")
 

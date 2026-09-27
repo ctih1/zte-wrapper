@@ -3,20 +3,12 @@ from datetime import datetime
 from typing import List, Literal, TypedDict
 
 PhoneNumber = str
-RuleType = Literal["TCP"] | Literal["UDP"] | Literal["TCP&UDP"]
-InterfaceType = (
-    Literal["WIFI6"]
-    | Literal["WIFI1"]
-    | Literal["Ethernet"]
-    | Literal["WIFI"]
-    | Literal[""]
-)
-FirewallProtocolTarget = (
-    Literal["TCP"] | Literal["UDP"] | Literal["ICMP"] | Literal["ALL"]
-)
-FirewallAction = Literal["DROP"] | Literal["ACCEPT"]
+RuleType = Literal["TCP", "UDP", "TCP&UDP"]
+InterfaceType = Literal["WIFI6", "WIFI1", "Ethernet", "WIFI", ""]
+FirewallProtocolTarget = Literal["TCP", "UDP", "ICMP", "ALL"]
+FirewallAction = Literal["DROP", "ACCEPT"]
 Hostname = TypedDict("Hostname", {"hostname": str, "mac": str})
-AutoOrManual = Literal["auto"] | Literal["manual"]
+AutoOrManual = Literal["auto", "manual"]
 
 
 class AuthError(Exception):
@@ -149,11 +141,7 @@ class OfflineStation:
 @dataclass
 class DDNSSettings:
     provider: (
-        Literal["freedns.afraid.org"]
-        | Literal["dyndns.org"]
-        | Literal["zoneedit.org"]
-        | Literal["no-ip.com"]
-        | str
+        Literal["freedns.afraid.org", "dyndns.org", "zoneedit.org", "no-ip.com"] | str
     )
     account_username: str
     account_password: str
