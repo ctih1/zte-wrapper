@@ -12,6 +12,7 @@ InterfaceType = (
     | Literal[""]
 )
 Hostname = TypedDict("Hostname", {"hostname": str, "mac": str})
+AutoOrManual = Literal["auto"] | Literal["manual"]
 
 
 class AuthError(Exception):
@@ -132,7 +133,7 @@ class DDNSSettings:
     account_username: str
     account_password: str
     hash_value: str
-    mode: Literal["auto"] | Literal["manual"]
+    mode: AutoOrManual
     enabled: bool
     domain: str
 
@@ -143,3 +144,28 @@ class MacBinding:
     hostname: str | Literal["(null)"]
     ip: str
     mac: str
+
+
+@dataclass
+class APNProfile:
+    data: str
+
+
+@dataclass
+class APNSettings:
+    apn_mode: AutoOrManual
+    profile_name: str
+    apn_wan_dial: str
+    apn_select: AutoOrManual
+    pdp_type: Literal["IP"] | str
+    pdp_select: AutoOrManual
+    pdp_address: str
+    index: int
+    wan_apn: str
+    ppp_auth_mode: str | Literal["none"]
+    ppp_username: str
+    ppp_password: str
+    dns_mode: AutoOrManual
+    prefer_dns_manual: str  # find later
+    standby_dns_manual: str  # find later x2
+    profiles: List[APNProfile]

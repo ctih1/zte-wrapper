@@ -11,6 +11,7 @@ from .wrappers import (
     ddns,
     networktools,
     bindings,
+    apn,
 )
 
 
@@ -26,3 +27,22 @@ class ZTEWrapper(ZTEAuthWrapper):
         self.ddns = ddns.DDNSWrapper(self)
         self.network_tools = networktools.NetworkToolWrapper(self)
         self.bindings = bindings.BindingWrapper(self)
+        self.apn = apn.APNWrapper(self)
+
+    async def perform_dbg_query(self, items: List[str]) -> dict:
+        res = await self.request(
+            "GET",
+            self.construct_url(
+                "goform_get_cmd_process",
+                {"cmd": ",".join(items), "isTest": "false", "multi_data": "true"},
+            ),
+        )
+
+        txt = await res.text()
+        try:
+            data = json.loads(txt)
+            return data
+        except Exception as e:
+            print(txt)
+            print(e)
+            return {}
