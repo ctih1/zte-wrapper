@@ -2,7 +2,7 @@ import json
 from typing import List
 
 from ..authwrapper import ZTEAuthWrapper
-from ..types import PortforwardingRule, PortforwardingTable, RuleType
+from ..types import PortforwardingRule, PortforwardingTable, PortRange, RuleType
 
 
 class PortforwardingWrapper:
@@ -38,8 +38,7 @@ class PortforwardingWrapper:
                     PortforwardingRule(
                         ip_addr=ip,
                         comment=comment,
-                        port_start=int(from_port),
-                        port_end=int(to_port),
+                        ports=PortRange(int(from_port), int(to_port)),
                         protocol=protocol,
                     )
                 )
@@ -59,8 +58,8 @@ class PortforwardingWrapper:
                 "isTest": "false",
                 "goformId": "FW_FORWARD_ADD",
                 "ipAddress": rule.ip_addr,
-                "portStart": rule.port_start,
-                "portEnd": rule.port_end,
+                "portStart": rule.ports.start,
+                "portEnd": rule.ports.end,
                 "protocol": rule.protocol,
                 "comment": rule.comment,
                 "AD": await self.auth.construct_ad_token(),

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from typing import List, Literal, TypedDict
 from datetime import datetime
+from typing import List, Literal, TypedDict
 
 PhoneNumber = str
 RuleType = Literal["TCP"] | Literal["UDP"] | Literal["TCP&UDP"]
@@ -82,8 +82,7 @@ class NetworkDetails:
 class PortforwardingRule:
     ip_addr: str
     comment: str
-    port_start: int
-    port_end: int
+    ports: PortRange
     protocol: RuleType
 
 
