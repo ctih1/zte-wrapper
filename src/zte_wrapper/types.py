@@ -169,3 +169,17 @@ class APNSettings:
     prefer_dns_manual: str  # find later
     standby_dns_manual: str  # find later x2
     profiles: List[APNProfile]
+
+
+@dataclass
+class DHCPSettings:
+    enabled: bool
+    end_ip: str
+    start_ip: str
+    lease_time_hours: int
+    dhcp_type: Literal["SERVER"] | str
+    lan_ip_addr: str
+    lan_netmask: str
+    mac_addr: str
+    mtu: int
+    tcp_mss: int

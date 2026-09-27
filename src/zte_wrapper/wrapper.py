@@ -12,6 +12,7 @@ from .wrappers import (
     networktools,
     bindings,
     apn,
+    dhcp,
 )
 
 
@@ -28,6 +29,7 @@ class ZTEWrapper(ZTEAuthWrapper):
         self.network_tools = networktools.NetworkToolWrapper(self)
         self.bindings = bindings.BindingWrapper(self)
         self.apn = apn.APNWrapper(self)
+        self.dhcp = dhcp.DHCPWrapper(self)
 
     async def perform_dbg_query(self, items: List[str]) -> dict:
         res = await self.request(
