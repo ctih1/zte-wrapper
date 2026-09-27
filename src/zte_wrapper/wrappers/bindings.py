@@ -1,7 +1,8 @@
-from ..authwrapper import ZTEAuthWrapper
 import json
-from ..types import MacBinding
 from typing import List
+
+from ..authwrapper import ZTEAuthWrapper
+from ..types import MacBinding
 
 
 class BindingWrapper:
@@ -9,18 +10,8 @@ class BindingWrapper:
         self.auth = auth
 
     async def get_mac_bindings(self) -> List[MacBinding]:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process",
-                {
-                    "isTest": "false",
-                    "cmd": "current_static_addr_list",
-                },
-            ),
-        )
+        data = await self.auth.query_items(["current_static_addr_list"])
 
-        data: dict = json.loads(await res.text())
         bindings: List[MacBinding] = []
 
         for binding in data["current_static_addr_list"]:

@@ -1,7 +1,8 @@
-from ..authwrapper import ZTEAuthWrapper
 import json
-from ..types import PortforwardingRule, PortforwardingTable, RuleType
 from typing import List
+
+from ..authwrapper import ZTEAuthWrapper
+from ..types import PortforwardingRule, PortforwardingTable, RuleType
 
 
 class PortforwardingWrapper:
@@ -9,19 +10,15 @@ class PortforwardingWrapper:
         self.auth = auth
 
     async def get_port_forwarding_rules(self) -> PortforwardingTable:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process",
-                {
-                    "isTest": "false",
-                    "cmd": "lan_ipaddr,PortForwardEnable,portforward_rule_num,PortForwardRules_0,PortForwardRules_1,PortForwardRules_2,PortForwardRules_3,PortForwardRules_4,PortForwardRules_5,PortForwardRules_6,PortForwardRules_7,PortForwardRules_8,PortForwardRules_9,PortForwardRules_10,PortForwardRules_11,PortForwardRules_12,PortForwardRules_13,PortForwardRules_14,PortForwardRules_15,PortForwardRules_16,PortForwardRules_17,PortForwardRules_18,PortForwardRules_19,PortForwardRules_20,PortForwardRules_21,PortForwardRules_22,PortForwardRules_23,PortForwardRules_24,PortForwardRules_25,PortForwardRules_26,PortForwardRules_27,PortForwardRules_28,PortForwardRules_29",
-                    "multi_data": "1",
-                },
-            ),
+        data = await self.auth.query_items(
+            [
+                "lan_ipaddr",
+                "PortForwardEnable",
+                "portforward_rule_num",
+                *[f"PortForwardRules_{i}" for i in range(30)],
+            ]
         )
 
-        data: dict = json.loads(await res.text())
         rules: List[PortforwardingRule] = []
 
         for k, v in data.items():

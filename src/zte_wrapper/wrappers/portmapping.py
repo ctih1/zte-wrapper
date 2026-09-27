@@ -1,7 +1,8 @@
-from ..authwrapper import ZTEAuthWrapper
 import json
-from ..types import PortmappingRule, PortmappingTable, RuleType
 from typing import List
+
+from ..authwrapper import ZTEAuthWrapper
+from ..types import PortmappingRule, PortmappingTable, RuleType
 
 
 class PortmappingWrapper:
@@ -9,19 +10,15 @@ class PortmappingWrapper:
         self.auth = auth
 
     async def get_portmap_rules(self) -> PortmappingTable:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process",
-                {
-                    "isTest": "false",
-                    "cmd": "lan_ipaddr,PortMapEnable,portmap_rule_num,PortMapRules_0,PortMapRules_1,PortMapRules_2,PortMapRules_3,PortMapRules_4,PortMapRules_5,PortMapRules_6,PortMapRules_7,PortMapRules_8,PortMapRules_9,PortMapRules_10,PortMapRules_11,PortMapRules_12,PortMapRules_13,PortMapRules_14,PortMapRules_15,PortMapRules_16,PortMapRules_17,PortMapRules_18,PortMapRules_19,PortMapRules_20,PortMapRules_21,PortMapRules_22,PortMapRules_23,PortMapRules_24,PortMapRules_25,PortMapRules_26,PortMapRules_27,PortMapRules_28,PortMapRules_29,PortMapRules_30,PortMapRules_31",
-                    "multi_data": "1",
-                },
-            ),
+        data = await self.auth.query_items(
+            [
+                "lan_ipaddr",
+                "PortMapEnable",
+                "portmap_rule_num",
+                *[f"PortMapRules_{i}" for i in range(30)],
+            ]
         )
 
-        data: dict = json.loads(await res.text())
         rules: List[PortmappingRule] = []
 
         for k, v in data.items():

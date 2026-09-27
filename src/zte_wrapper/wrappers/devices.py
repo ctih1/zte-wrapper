@@ -1,8 +1,9 @@
-from ..authwrapper import ZTEAuthWrapper
 import json
-from ..types import WirelessStation, LanStation, Hostname, OfflineStation
-from typing import List
 from datetime import datetime
+from typing import List
+
+from ..authwrapper import ZTEAuthWrapper
+from ..types import Hostname, LanStation, OfflineStation, WirelessStation
 
 
 class DeviceWrapper:
@@ -10,14 +11,7 @@ class DeviceWrapper:
         self.auth = auth
 
     async def get_wlan_station_list(self) -> List[WirelessStation]:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process", {"cmd": "station_list", "isTest": "false"}
-            ),
-        )
-
-        data = json.loads(await res.text())
+        data = await self.auth.query_items(["station_list"])
 
         stations: List[WirelessStation] = []
 
@@ -38,14 +32,8 @@ class DeviceWrapper:
         return stations
 
     async def get_hostnames(self) -> List[Hostname]:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process", {"cmd": "hostNameList", "isTest": "false"}
-            ),
-        )
+        data = await self.auth.query_items(["hostNameList"])
 
-        data = json.loads(await res.text())
         return data["devices"]
 
     async def get_wlan_devices(self) -> List[WirelessStation]:
@@ -72,14 +60,7 @@ class DeviceWrapper:
         return stations
 
     async def get_lan_station_list(self) -> List[LanStation]:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process", {"cmd": "lan_station_list", "isTest": "false"}
-            ),
-        )
-
-        data = json.loads(await res.text())
+        data = await self.auth.query_items(["lan_station_list"])
 
         stations: List[LanStation] = []
 
@@ -116,16 +97,7 @@ class DeviceWrapper:
         return stations
 
     async def get_offline_stations(self) -> List[OfflineStation]:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process",
-                {"cmd": "offline_station_list", "isTest": "false"},
-            ),
-        )
-
-        data = json.loads(await res.text())
-
+        data = await self.auth.query_items(["offline_station_list"])
         stations: List[OfflineStation] = []
 
         for station in data["offline_station_list"]:

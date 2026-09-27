@@ -1,8 +1,9 @@
-from ..authwrapper import ZTEAuthWrapper
 import json
-from ..types import DHCPSettings
-from typing import List, Tuple
 from datetime import datetime
+from typing import List, Tuple
+
+from ..authwrapper import ZTEAuthWrapper
+from ..types import DHCPSettings
 
 
 class DHCPWrapper:
@@ -10,20 +11,20 @@ class DHCPWrapper:
         self.auth = auth
 
     async def get_settings(self) -> DHCPSettings:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process",
-                {
-                    "isTest": "false",
-                    "cmd": "lan_ipaddr,lan_netmask,mac_address,dhcpEnabled,dhcpStart,dhcpEnd,dhcpLease_hour,mtu,tcp_mss,lanDhcpType",
-                    "multi_data": "1",
-                    "_": self.auth.get_timestamp(),
-                },
-            ),
+        data = await self.auth.query_items(
+            [
+                "lan_ipaddr",
+                "lan_netmask",
+                "mac_address",
+                "dhcpEnabled",
+                "dhcpStart",
+                "dhcpEnd",
+                "dhcpLease_hour",
+                "mtu",
+                "tcp_mss",
+                "lanDhcpType",
+            ]
         )
-
-        data = json.loads(await res.text())
 
         return DHCPSettings(
             enabled=data["dhcpEnabled"] == "1",
