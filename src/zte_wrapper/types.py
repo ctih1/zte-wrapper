@@ -220,3 +220,29 @@ class FirewallConfig:
     enabled: bool
     rules_ipv4: list[FirewallRule]
     rules_ipv6: list[FirewallRule]
+
+
+@dataclass
+class ChipSettings:
+    ap_index: int
+    ap_turned_on: bool
+    ap_broadcast_disabled: bool
+    ap_isolated: bool
+    ap_max_devices: int
+
+    authmode: str
+    band: str
+    bandwidth: int
+    channel: int
+    chip_index: int
+    country_code: str
+
+    current_station_chip_number: int
+    encryption_type: str
+    guest_ssid_active_time: int
+    password: str
+    pmf_switch: bool
+
+    ssid: str
+    ssid_pmf: str
+    wireless_mode: int

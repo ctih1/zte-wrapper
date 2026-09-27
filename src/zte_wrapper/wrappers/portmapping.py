@@ -58,7 +58,7 @@ class PortmappingWrapper:
                 "isTest": "false",
                 "goformId": "ADD_PORT_MAP",
                 "portMapEnabled": "1",
-                "ipAddress": rule.ip_addr,
+                "ip_address": rule.ip_addr,
                 "fromPort": rule.port_external,
                 "toPort": rule.port_internal,
                 "protocol": rule.protocol,

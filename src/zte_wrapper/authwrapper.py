@@ -165,17 +165,18 @@ class ZTEAuthWrapper:
         return res
 
     async def query_items(self, items: list[str]) -> dict:
+        args = {
+            "cmd": ",".join(items),
+            "isTest": "false",
+            "_": self.get_timestamp(),
+        }
+
+        if len(items) > 1:
+            args["multi_data"] = "true"
+
         res = await self.request(
             "GET",
-            self.construct_url(
-                "goform_get_cmd_process",
-                {
-                    "cmd": ",".join(items),
-                    "isTest": "false",
-                    "multi_data": "true",
-                    "_": self.get_timestamp(),
-                },
-            ),
+            self.construct_url("goform_get_cmd_process", args),
         )
 
         txt = await res.text()

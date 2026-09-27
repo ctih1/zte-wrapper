@@ -13,6 +13,7 @@ from .wrappers import (
     portmapping,
     signal,
     sms,
+    wifi,
 )
 
 logger = logging.getLogger("zte")
@@ -33,6 +34,7 @@ class ZTEWrapper(ZTEAuthWrapper):
         self.apn = apn.APNWrapper(self)
         self.dhcp = dhcp.DHCPWrapper(self)
         self.firewall = firewall.FirewallWrapper(self)
+        self.wifi = wifi.WiFiWrapper(self)
 
     async def backup_settings(self) -> dict:
         data = {}
