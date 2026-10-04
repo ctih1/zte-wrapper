@@ -1,22 +1,16 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import List, Literal, TypedDict
 from datetime import datetime
+from typing import Literal, TypedDict
 
 PhoneNumber = str
-RuleType = Literal["TCP"] | Literal["UDP"] | Literal["TCP&UDP"]
-InterfaceType = (
-    Literal["WIFI6"]
-    | Literal["WIFI1"]
-    | Literal["Ethernet"]
-    | Literal["WIFI"]
-    | Literal[""]
-)
-FirewallProtocolTarget = (
-    Literal["TCP"] | Literal["UDP"] | Literal["ICMP"] | Literal["ALL"]
-)
-FirewallAction = Literal["DROP"] | Literal["ACCEPT"]
+RuleType = Literal["TCP", "UDP", "TCP&UDP"]
+InterfaceType = Literal["WIFI6", "WIFI1", "Ethernet", "WIFI", ""]
+FirewallProtocolTarget = Literal["TCP", "UDP", "ICMP", "ALL"]
+FirewallAction = Literal["DROP", "ACCEPT"]
 Hostname = TypedDict("Hostname", {"hostname": str, "mac": str})
-AutoOrManual = Literal["auto"] | Literal["manual"]
+AutoOrManual = Literal["auto", "manual"]
 
 
 class AuthError(Exception):
@@ -82,8 +76,7 @@ class NetworkDetails:
 class PortforwardingRule:
     ip_addr: str
     comment: str
-    port_start: int
-    port_end: int
+    ports: PortRange
     protocol: RuleType
 
 
@@ -92,7 +85,7 @@ class PortforwardingTable:
     gateway_addr: str
     enabled: bool
     rules_amount: int
-    rules: List[PortforwardingRule]
+    rules: list[PortforwardingRule]
 
 
 @dataclass
@@ -109,7 +102,7 @@ class PortmappingTable:
     gateway_addr: str
     enabled: bool
     rules_amount: int
-    rules: List[PortmappingRule]
+    rules: list[PortmappingRule]
 
 
 @dataclass
@@ -150,11 +143,7 @@ class OfflineStation:
 @dataclass
 class DDNSSettings:
     provider: (
-        Literal["freedns.afraid.org"]
-        | Literal["dyndns.org"]
-        | Literal["zoneedit.org"]
-        | Literal["no-ip.com"]
-        | str
+        Literal["freedns.afraid.org", "dyndns.org", "zoneedit.org", "no-ip.com"] | str
     )
     account_username: str
     account_password: str
@@ -194,7 +183,7 @@ class APNSettings:
     dns_mode: AutoOrManual
     prefer_dns_manual: str  # find later
     standby_dns_manual: str  # find later x2
-    profiles: List[APNProfile]
+    profiles: list[APNProfile]
 
 
 @dataclass
@@ -229,5 +218,31 @@ class FirewallRule:
 class FirewallConfig:
     default_policy: FirewallAction
     enabled: bool
-    rules_ipv4: List[FirewallRule]
-    rules_ipv6: List[FirewallRule]
+    rules_ipv4: list[FirewallRule]
+    rules_ipv6: list[FirewallRule]
+
+
+@dataclass
+class ChipSettings:
+    ap_index: int
+    ap_turned_on: bool
+    ap_broadcast_disabled: bool
+    ap_isolated: bool
+    ap_max_devices: int
+
+    authmode: str
+    band: str
+    bandwidth: int
+    channel: int
+    chip_index: int
+    country_code: str
+
+    current_station_chip_number: int
+    encryption_type: str
+    guest_ssid_active_time: int
+    password: str
+    pmf_switch: bool
+
+    ssid: str
+    ssid_pmf: str
+    wireless_mode: int

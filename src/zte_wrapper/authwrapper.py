@@ -1,11 +1,12 @@
-import logging
-import aiohttp
-from hashlib import sha256
-import urllib.parse
-import time
 import json
-from typing import Literal, Dict, Any, Tuple
+import logging
+import time
+import urllib.parse
 from copy import deepcopy
+from hashlib import sha256
+from typing import Any, Literal
+
+import aiohttp
 
 logger = logging.getLogger("zte")
 
@@ -39,7 +40,7 @@ class ZTEAuthWrapper:
 
         self.session: aiohttp.ClientSession | None = None
 
-    def construct_url(self, command: GOFORM_COMMANDS, args: Dict[str, Any]) -> str:
+    def construct_url(self, command: GOFORM_COMMANDS, args: dict[str, Any]) -> str:
         base_url = f"http://{self.address}/goform/{command}/?"
 
         url = base_url + urllib.parse.urlencode(
@@ -63,11 +64,13 @@ class ZTEAuthWrapper:
             )
 
             logger.info("Got LD token")
-            return json.loads((await res.text())).get(
+            return json.loads(
+                await res.text()
+            ).get(
                 "LD"
             )  # json.loads instead of res.json() because the stupid API returns the stuff as text/html
 
-    async def __get_rd0_rd1(self) -> Tuple[str, str]:
+    async def __get_rd0_rd1(self) -> tuple[str, str]:
         res = await self.request(
             "GET",
             self.construct_url(
@@ -160,6 +163,30 @@ class ZTEAuthWrapper:
             res = await self.session.post(*args, **kwargs, headers=headers)
 
         return res
+
+    async def query_items(self, items: list[str]) -> dict:
+        args = {
+            "cmd": ",".join(items),
+            "isTest": "false",
+            "_": self.get_timestamp(),
+        }
+
+        if len(items) > 1:
+            args["multi_data"] = "true"
+
+        res = await self.request(
+            "GET",
+            self.construct_url("goform_get_cmd_process", args),
+        )
+
+        txt = await res.text()
+        try:
+            data = json.loads(txt)
+            return data
+        except Exception as e:
+            logger.info(txt)
+            logger.error(e)
+            return {}
 
     async def close(self) -> None:
         logger.info("Closign aiohttp client")

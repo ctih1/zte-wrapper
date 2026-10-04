@@ -1,25 +1,17 @@
-from ..authwrapper import ZTEAuthWrapper
-import json
-from ..types import WirelessStation, LanStation, Hostname, OfflineStation
-from typing import List
 from datetime import datetime
+
+from ..authwrapper import ZTEAuthWrapper
+from ..types import Hostname, LanStation, OfflineStation, WirelessStation
 
 
 class DeviceWrapper:
     def __init__(self, auth: ZTEAuthWrapper):
         self.auth = auth
 
-    async def get_wlan_station_list(self) -> List[WirelessStation]:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process", {"cmd": "station_list", "isTest": "false"}
-            ),
-        )
+    async def get_wlan_station_list(self) -> list[WirelessStation]:
+        data = await self.auth.query_items(["station_list"])
 
-        data = json.loads(await res.text())
-
-        stations: List[WirelessStation] = []
+        stations: list[WirelessStation] = []
 
         for station in data["station_list"]:
             stations.append(
@@ -37,18 +29,12 @@ class DeviceWrapper:
             )
         return stations
 
-    async def get_hostnames(self) -> List[Hostname]:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process", {"cmd": "hostNameList", "isTest": "false"}
-            ),
-        )
+    async def get_hostnames(self) -> list[Hostname]:
+        data = await self.auth.query_items(["hostNameList"])
 
-        data = json.loads(await res.text())
         return data["devices"]
 
-    async def get_wlan_devices(self) -> List[WirelessStation]:
+    async def get_wlan_devices(self) -> list[WirelessStation]:
         """Same as `get_station_list`, but uses the correct hostname
 
         Returns:
@@ -71,17 +57,10 @@ class DeviceWrapper:
 
         return stations
 
-    async def get_lan_station_list(self) -> List[LanStation]:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process", {"cmd": "lan_station_list", "isTest": "false"}
-            ),
-        )
+    async def get_lan_station_list(self) -> list[LanStation]:
+        data = await self.auth.query_items(["lan_station_list"])
 
-        data = json.loads(await res.text())
-
-        stations: List[LanStation] = []
+        stations: list[LanStation] = []
 
         for station in data["lan_station_list"]:
             stations.append(
@@ -97,8 +76,8 @@ class DeviceWrapper:
             )
         return stations
 
-    async def get_lan_devices(self) -> List[LanStation]:
-        stations: List[LanStation] = await self.get_lan_station_list()
+    async def get_lan_devices(self) -> list[LanStation]:
+        stations: list[LanStation] = await self.get_lan_station_list()
         data = await self.get_hostnames()
 
         for hostname in data:
@@ -115,18 +94,9 @@ class DeviceWrapper:
 
         return stations
 
-    async def get_offline_stations(self) -> List[OfflineStation]:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process",
-                {"cmd": "offline_station_list", "isTest": "false"},
-            ),
-        )
-
-        data = json.loads(await res.text())
-
-        stations: List[OfflineStation] = []
+    async def get_offline_stations(self) -> list[OfflineStation]:
+        data = await self.auth.query_items(["offline_station_list"])
+        stations: list[OfflineStation] = []
 
         for station in data["offline_station_list"]:
             stations.append(
@@ -142,8 +112,8 @@ class DeviceWrapper:
             )
         return stations
 
-    async def get_offline_devices(self) -> List[OfflineStation]:
-        stations: List[OfflineStation] = await self.get_offline_stations()
+    async def get_offline_devices(self) -> list[OfflineStation]:
+        stations: list[OfflineStation] = await self.get_offline_stations()
         data = await self.get_hostnames()
 
         for hostname in data:

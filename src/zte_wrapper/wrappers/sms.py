@@ -1,9 +1,11 @@
-from ..authwrapper import ZTEAuthWrapper
+from __future__ import annotations
+
 import json
-from ..types import PhoneNumber, SMSMessage, AuthError
-from ..helpers import utf_16_encode, utf_16_decode, get_zte_timestring
-from typing import List, Dict
 import logging
+
+from ..authwrapper import ZTEAuthWrapper
+from ..helpers import get_zte_timestring, utf_16_decode, utf_16_encode
+from ..types import PhoneNumber, SMSMessage
 
 logger = logging.getLogger("zte")
 
@@ -12,7 +14,7 @@ class SmsWrapper:
     def __init__(self, auth: ZTEAuthWrapper):
         self.auth = auth
 
-    async def get_sms(self) -> Dict[PhoneNumber, List[SMSMessage]] | None:
+    async def get_sms(self) -> dict[PhoneNumber, list[SMSMessage]] | None:
         res = await self.auth.request(
             "GET",
             self.auth.construct_url(
@@ -36,7 +38,7 @@ class SmsWrapper:
             logger.error(f"Failed to retrieve sms data: {jason}")
             return None
 
-        results: Dict[PhoneNumber, List[SMSMessage]] = {}
+        results: dict[PhoneNumber, list[SMSMessage]] = {}
         for message in jason["messages"]:
             phone_number = utf_16_decode(message["number"])
 

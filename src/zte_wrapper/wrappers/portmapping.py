@@ -1,7 +1,7 @@
-from ..authwrapper import ZTEAuthWrapper
 import json
+
+from ..authwrapper import ZTEAuthWrapper
 from ..types import PortmappingRule, PortmappingTable, RuleType
-from typing import List
 
 
 class PortmappingWrapper:
@@ -9,20 +9,16 @@ class PortmappingWrapper:
         self.auth = auth
 
     async def get_portmap_rules(self) -> PortmappingTable:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process",
-                {
-                    "isTest": "false",
-                    "cmd": "lan_ipaddr,PortMapEnable,portmap_rule_num,PortMapRules_0,PortMapRules_1,PortMapRules_2,PortMapRules_3,PortMapRules_4,PortMapRules_5,PortMapRules_6,PortMapRules_7,PortMapRules_8,PortMapRules_9,PortMapRules_10,PortMapRules_11,PortMapRules_12,PortMapRules_13,PortMapRules_14,PortMapRules_15,PortMapRules_16,PortMapRules_17,PortMapRules_18,PortMapRules_19,PortMapRules_20,PortMapRules_21,PortMapRules_22,PortMapRules_23,PortMapRules_24,PortMapRules_25,PortMapRules_26,PortMapRules_27,PortMapRules_28,PortMapRules_29,PortMapRules_30,PortMapRules_31",
-                    "multi_data": "1",
-                },
-            ),
+        data = await self.auth.query_items(
+            [
+                "lan_ipaddr",
+                "PortMapEnable",
+                "portmap_rule_num",
+                *[f"PortMapRules_{i}" for i in range(30)],
+            ]
         )
 
-        data: dict = json.loads(await res.text())
-        rules: List[PortmappingRule] = []
+        rules: list[PortmappingRule] = []
 
         for k, v in data.items():
             k: str = k
@@ -62,9 +58,9 @@ class PortmappingWrapper:
                 "isTest": "false",
                 "goformId": "ADD_PORT_MAP",
                 "portMapEnabled": "1",
-                "ipAddress": rule.ip_addr,
-                "fromPort": rule.port_external,
-                "toPort": rule.port_internal,
+                "ip_address": rule.ip_addr,
+                "fromPort": rule.port_internal,
+                "toPort": rule.port_external,
                 "protocol": rule.protocol,
                 "comment": rule.comment,
                 "AD": await self.auth.construct_ad_token(),
@@ -74,7 +70,7 @@ class PortmappingWrapper:
         data = json.loads(await res.text())
         return data["result"] == "success"
 
-    async def delete_portmapping_rules(self, indices: List[int]) -> bool:
+    async def delete_portmapping_rules(self, indices: list[int]) -> bool:
         res = await self.auth.request(
             "POST",
             self.auth.construct_url("goform_set_cmd_process", {}),

@@ -1,8 +1,10 @@
-from ..authwrapper import ZTEAuthWrapper
+from __future__ import annotations
+
 import json
-from ..types import FirewallRule, FirewallConfig, FirewallProtocolTarget, PortRange
-from typing import List, Tuple, Literal
-from datetime import datetime
+from typing import Literal
+
+from ..authwrapper import ZTEAuthWrapper
+from ..types import FirewallConfig, FirewallProtocolTarget, FirewallRule, PortRange
 
 
 class FirewallWrapper:
@@ -10,26 +12,19 @@ class FirewallWrapper:
         self.auth = auth
 
     async def get_config(self) -> FirewallConfig:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process",
-                {
-                    "isTest": "false",
-                    "cmd": "IPPortFilterEnable,DefaultFirewallPolicy,IPPortFilterRules_0,IPPortFilterRules_1,IPPortFilterRules_2,IPPortFilterRules_3,IPPortFilterRules_4,IPPortFilterRules_5,IPPortFilterRules_6,IPPortFilterRules_7,IPPortFilterRules_8,IPPortFilterRules_9,IPPortFilterRulesv6_0,IPPortFilterRulesv6_1,IPPortFilterRulesv6_2,IPPortFilterRulesv6_3,IPPortFilterRulesv6_4,IPPortFilterRulesv6_5,IPPortFilterRulesv6_6,IPPortFilterRulesv6_7,IPPortFilterRulesv6_8,IPPortFilterRulesv6_9, IPPortFilterRulesv6_10",
-                    "multi_data": "1",
-                },
-            ),
+        data = await self.auth.query_items(
+            [
+                "IPPortFilterEnable",
+                "DefaultFirewallPolicy",
+                *[f"IPPortFilterRules_{i}" for i in range(10)],
+                *[f"IPPortFilterRulesv6_{i}" for i in range(10)],
+            ]
         )
 
-        data: dict = json.loads(await res.text())
-        rules: List[FirewallRule] = []
-        rules_ipv6: List[FirewallRule] = []
+        rules: list[FirewallRule] = []
+        rules_ipv6: list[FirewallRule] = []
 
         for k, v in data.items():
-            k: str = k
-            v: str = v
-
             if k.startswith("IPPortFilterRules") and len(v) > 2:
                 (
                     src_ip,
@@ -58,7 +53,7 @@ class FirewallWrapper:
                 elif i_protocol == 4:
                     string_protocol = "ICMP"
 
-                string_action = "DROP" if protocol == "1" else "ACCEPT"
+                string_action = "DROP" if action == "1" else "ACCEPT"
 
                 rule = FirewallRule(
                     mac,
@@ -85,8 +80,8 @@ class FirewallWrapper:
 
     async def delete_rules(
         self,
-        rule_ipv4_indices: List[int] | None = None,
-        rule_ipv6_indices: List[int] | None = None,
+        rule_ipv4_indices: list[int] | None = None,
+        rule_ipv6_indices: list[int] | None = None,
     ) -> bool:
         res = await self.auth.request(
             "POST",
@@ -112,7 +107,7 @@ class FirewallWrapper:
         return data["result"] == "success"
 
     async def add_rule(
-        self, ip_type: Literal["ipv4"] | Literal["ipv6"], rule: FirewallRule
+        self, ip_type: Literal["ipv4", "ipv6"], rule: FirewallRule
     ) -> bool:
         d = {
             "isTest": "false",

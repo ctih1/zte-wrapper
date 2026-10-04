@@ -3,8 +3,8 @@
 An API wrapper for modern ZTE routers using a more advanced authentication method. This has only been tested on an MC888B. If you have any feedback, please share!
 
 ## Features
-"Support" in this case means that it can be controlled via the library.
 
+"Support" in this case means that it can be controlled via the library.
 
 | Feature                               | Support |
 | ------------------------------------- | ------- |
@@ -18,49 +18,43 @@ An API wrapper for modern ZTE routers using a more advanced authentication metho
 | Get signal strength                   | ✅      |
 | Band information                      | ✅      |
 | Usage statistics                      | ✅      |
-| Firewall (e.g. domain/port filtering) | ❌      |
+| Firewall (e.g. domain/port filtering) | ✅      |
 | DHCP Settings                         | ✅      |
 | MAC-IP bindings                       | ✅      |
 | DDNS settings                         | ✅      |
+| Query WiFI settings                   | ✅      |
+| Edit WiFI settings                    | ❌      |
 | VPN settings                          | ❌      |
 | Network tools (e.g. traceroute/ping)  | ✅      |
 | "Preferred position" tools            | ❌*     |
 
 *: Not planning on implementing
 
-
 <details>
 <summary>Features as overlayed on web panel</summary>
 
 (based on commit a7baa3b)
 
-
 ![Network tab](screenshots/network.png)
-
 
 ![WiFi tab](screenshots/wifi.png)
 
-
 ![Devices tab](screenshots/devices.png)
-
 
 ![Data usage tab](screenshots/datausage.png)
 
-
 ![Router tab](screenshots/router.png)
-
 
 ![SMS tab](screenshots/sms.png)
 
-
 ![Security tab](screenshots/security.png)
-
 
 ![System tab](screenshots/system.png)
 
 </details>
 
 ## Roadmap
+
 1. ~~Implement DDNS-settings~~
 
 2. ~~Publish onto PyPI~~ 
@@ -74,9 +68,11 @@ An API wrapper for modern ZTE routers using a more advanced authentication metho
 6. Write tests
 
 ## Notes
+
 - When referring to "megabytes" or "bytes", they are in base 2 format (e.g. 1Gib = 1024Mib)
 - Authenticating (aka. running any of the API calls) logs off other clients from the admin web panel.
-- Even thought the `apn` wrapper *should* be able to change DNS settings, I've found that it doesn't work. This might have been patched in an update? 
+- Even thought the `apn` wrapper _should_ be able to change DNS settings, I've found that it doesn't work. This might have been patched in an update?
 
 ## Why?
+
 I wanted to harvest statistics from the router to my Prometheus instance. I might actually rewrite the entire admin webpage since it's kind of horrible

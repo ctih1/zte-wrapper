@@ -1,7 +1,7 @@
-from ..authwrapper import ZTEAuthWrapper
 import json
+
+from ..authwrapper import ZTEAuthWrapper
 from ..types import DDNSSettings
-from typing import List
 
 
 class DDNSWrapper:
@@ -9,19 +9,17 @@ class DDNSWrapper:
         self.auth = auth
 
     async def get_ddns_settings(self) -> DDNSSettings:
-        res = await self.auth.request(
-            "GET",
-            self.auth.construct_url(
-                "goform_get_cmd_process",
-                {
-                    "isTest": "false",
-                    "multi_data": "1",
-                    "cmd": "DDNS_Enable,DDNS_Mode,DDNSProvider,DDNSAccount,DDNSPassword,DDNS,DDNS_Hash_Value",
-                },
-            ),
+        data = await self.auth.query_items(
+            [
+                "DDNS_Enable",
+                "DDNS_Mode",
+                "DDNSProvider",
+                "DDNSAccount",
+                "DDNSPassword",
+                "DDNS",
+                "DDNS_Hash_Value",
+            ]
         )
-
-        data = json.loads(await res.text())
         return DDNSSettings(
             provider=data["DDNSProvider"],
             enabled=data["DDNS_Enable"] == "1",

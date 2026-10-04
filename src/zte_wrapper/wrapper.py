@@ -1,23 +1,20 @@
-import json
-from typing import Dict, List
-from datetime import datetime
+import logging
+
 from .authwrapper import ZTEAuthWrapper
 from .wrappers import (
-    portforwarding,
-    sms,
-    signal,
-    devices,
-    portmapping,
-    ddns,
-    networktools,
-    bindings,
     apn,
+    bindings,
+    ddns,
+    devices,
     dhcp,
     firewall,
+    networktools,
+    portforwarding,
+    portmapping,
+    signal,
+    sms,
+    wifi,
 )
-from dataclasses import dataclass, asdict
-
-import logging
 
 logger = logging.getLogger("zte")
 
@@ -37,24 +34,7 @@ class ZTEWrapper(ZTEAuthWrapper):
         self.apn = apn.APNWrapper(self)
         self.dhcp = dhcp.DHCPWrapper(self)
         self.firewall = firewall.FirewallWrapper(self)
-
-    async def perform_dbg_query(self, items: List[str]) -> dict:
-        res = await self.request(
-            "GET",
-            self.construct_url(
-                "goform_get_cmd_process",
-                {"cmd": ",".join(items), "isTest": "false", "multi_data": "true"},
-            ),
-        )
-
-        txt = await res.text()
-        try:
-            data = json.loads(txt)
-            return data
-        except Exception as e:
-            print(txt)
-            print(e)
-            return {}
+        self.wifi = wifi.WiFiWrapper(self)
 
     async def backup_settings(self) -> dict:
         data = {}
