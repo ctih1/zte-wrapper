@@ -63,7 +63,7 @@ An API wrapper for modern ZTE routers using a more advanced authentication metho
 ## Roadmap
 1. ~~Implement DDNS-settings~~
 
-2. Publish onto PyPI
+2. ~~Publish onto PyPI~~ 
 
 3. More reliable error handling
 

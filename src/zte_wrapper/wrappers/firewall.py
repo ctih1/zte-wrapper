@@ -130,7 +130,6 @@ class FirewallWrapper:
             "comment": rule.comment,
             "AD": await self.auth.construct_ad_token(),
         }
-        print(d)
         res = await self.auth.request(
             "POST",
             self.auth.construct_url("goform_set_cmd_process", {}),
