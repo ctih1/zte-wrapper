@@ -1,6 +1,6 @@
 [project]
 name = "zte-wrapper"
-version = "1.0.4"
+version = "1.0.5"
 authors = [
   { name="ctih1", email="contact@ctih1.fi" },
 ]
