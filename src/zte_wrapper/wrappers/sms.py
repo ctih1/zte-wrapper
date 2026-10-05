@@ -62,7 +62,7 @@ class SmsWrapper:
                     tag=int(message["tag"]),
                     id=int(message["id"]),
                     mode=mode,
-                    date=parse_zte_timestring(message["date"]),
+                    date=parse_zte_timestring(message["date"], ","),
                     sms_class=int(message["sms_class"]),
                 )
             )
