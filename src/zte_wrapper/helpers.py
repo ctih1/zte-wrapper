@@ -21,7 +21,7 @@ def parse_zte_timestring(string: str, separator: str) -> datetime:
     year, month, day, hour, minute, second, tz_offset = string.split(separator)
 
     date = datetime(
-        int(year), int(month), int(day), int(hour), int(minute), int(second), 0
+        2000 + int(year), int(month), int(day), int(hour), int(minute), int(second), 0
     )
 
     date += timedelta(hours=int(tz_offset))
