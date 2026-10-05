@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, Any
 
 PhoneNumber = str
 RuleType = Literal["TCP", "UDP", "TCP&UDP"]
@@ -11,6 +11,7 @@ FirewallProtocolTarget = Literal["TCP", "UDP", "ICMP", "ALL"]
 FirewallAction = Literal["DROP", "ACCEPT"]
 Hostname = TypedDict("Hostname", {"hostname": str, "mac": str})
 AutoOrManual = Literal["auto", "manual"]
+SMSRole = Literal["SENT_BY_SELF", "SENT_BY_OTHER", "UNKNOWN"]
 
 
 class AuthError(Exception):
@@ -38,12 +39,21 @@ class PortRange:
         self.iter += 1
         return val
 
+    def as_range(self) -> range:
+        return range(self.start, self.end + 1)
+
+    def as_dict(self) -> dict:
+        return {"start": self.start, "end": self.end}
+
 
 @dataclass
 class SMSMessage:
     content: str
     tag: int
     id: int
+    date: datetime
+    mode: SMSRole
+    sms_class: int
 
 
 @dataclass

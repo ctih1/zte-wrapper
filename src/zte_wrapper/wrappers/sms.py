@@ -4,8 +4,13 @@ import json
 import logging
 
 from ..authwrapper import ZTEAuthWrapper
-from ..helpers import get_zte_timestring, utf_16_decode, utf_16_encode
-from ..types import PhoneNumber, SMSMessage
+from ..helpers import (
+    get_zte_timestring,
+    utf_16_decode,
+    utf_16_encode,
+    parse_zte_timestring,
+)
+from ..types import PhoneNumber, SMSMessage, SMSRole
 
 logger = logging.getLogger("zte")
 
@@ -45,11 +50,20 @@ class SmsWrapper:
             if phone_number not in results:
                 results[phone_number] = []
 
+            mode: SMSRole = "UNKNOWN"
+            if message["tag"] == "2":
+                mode = "SENT_BY_SELF"
+            if message["tag"] == "0":
+                mode = "SENT_BY_OTHER"
+
             results[phone_number].append(
                 SMSMessage(
                     content=utf_16_decode(message["content"]),
                     tag=int(message["tag"]),
                     id=int(message["id"]),
+                    mode=mode,
+                    date=parse_zte_timestring(message["date"]),
+                    sms_class=int(message["sms_class"]),
                 )
             )
 
