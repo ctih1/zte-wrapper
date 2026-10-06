@@ -47,11 +47,22 @@ class PortRange:
 
 
 @dataclass
+class DumbTime:
+    year: int
+    day: int
+    month: int
+    hour: int
+    minute: int
+    second: int
+    offset: int
+
+
+@dataclass
 class SMSMessage:
     content: str
     tag: int
     id: int
-    date: datetime
+    date: DumbTime
     mode: SMSRole
     sms_class: int
 

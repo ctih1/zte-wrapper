@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from .types import DumbTime
 
 
 def utf_16_decode(inp: str) -> str:
@@ -17,19 +18,15 @@ def get_zte_timestring(timezone_offset: int) -> str:
     return output
 
 
-def parse_zte_timestring(string: str, separator: str) -> datetime:
+def parse_zte_timestring(string: str, separator: str) -> DumbTime:
     year, month, day, hour, minute, second, tz_offset = string.split(separator)
 
-    date = datetime(
+    return DumbTime(
         2000 + int(year),
-        min(int(month), 12),
-        min(int(day), 31),
-        min(int(hour), 23),
-        min(int(minute), 59),
-        min(int(second), 59),
-        0,
+        int(day),
+        int(month),
+        int(hour),
+        int(minute),
+        int(second),
+        int(tz_offset),
     )
-
-    date += timedelta(hours=int(tz_offset))
-
-    return date

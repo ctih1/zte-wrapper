@@ -10,7 +10,7 @@ from ..helpers import (
     utf_16_encode,
     parse_zte_timestring,
 )
-from ..types import PhoneNumber, SMSMessage, SMSRole
+from ..types import PhoneNumber, SMSMessage, SMSRole, DumbTime
 
 logger = logging.getLogger("zte")
 
