@@ -45,8 +45,6 @@ class NetworkToolWrapper:
         return data["result"] == "success"
 
     async def get_ping_output(self) -> str | None:
-        await self.clear_ping_output()
-
         res = await self.auth.request(
             "GET",
             f"http://{self.auth.address}/PingMessages?_={self.auth.get_timestamp()}",
@@ -98,8 +96,6 @@ class NetworkToolWrapper:
         return data["result"] == "success"
 
     async def get_traceroute_output(self) -> str | None:
-        await self.clear_traceroute_output()
-
         res = await self.auth.request(
             "GET",
             f"http://{self.auth.address}/TracerouteMessages?_={self.auth.get_timestamp()}",
