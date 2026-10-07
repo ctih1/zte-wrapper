@@ -8,7 +8,12 @@ class NetworkToolWrapper:
         self.auth = auth
 
     async def start_ping(
-        self, target: str, ping_count: int = 5, packet_size: int = 64
+        self,
+        target: str,
+        ping_count: int = 5,
+        packet_size: int = 64,
+        ping_quiet: int = 1,
+        ping_type: str = "4",
     ) -> bool:
         """Starts pinging specific IP address or domain. To get the output, poll `get_ping_output` until it returns a value.
 
@@ -29,8 +34,8 @@ class NetworkToolWrapper:
                 "DIAG_URL": target,
                 "DIAG_CHECK": "0",
                 "ping_count": ping_count,
-                "ping_type": "4",
-                "ping_quiet": "1",
+                "ping_type": ping_type,
+                "ping_quiet": ping_quiet,
                 "ping_size": packet_size,
                 "AD": await self.auth.construct_ad_token(),
             },
@@ -39,13 +44,16 @@ class NetworkToolWrapper:
         data = json.loads(await res.text())
         return data["result"] == "success"
 
-    async def get_ping_output(self) -> str:
+    async def get_ping_output(self) -> str | None:
         await self.clear_ping_output()
 
         res = await self.auth.request(
             "GET",
             f"http://{self.auth.address}/PingMessages?_={self.auth.get_timestamp()}",
         )
+
+        if res.status == 404:
+            return None
 
         return await res.text()
 
@@ -89,13 +97,16 @@ class NetworkToolWrapper:
         data = json.loads(await res.text())
         return data["result"] == "success"
 
-    async def get_traceroute_output(self) -> str:
+    async def get_traceroute_output(self) -> str | None:
         await self.clear_traceroute_output()
 
         res = await self.auth.request(
             "GET",
             f"http://{self.auth.address}/TracerouteMessages?_={self.auth.get_timestamp()}",
         )
+
+        if res.status == 404:
+            return None
 
         return await res.text()
 

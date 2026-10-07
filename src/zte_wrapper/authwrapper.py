@@ -64,9 +64,7 @@ class ZTEAuthWrapper:
             )
 
             logger.info("Got LD token")
-            return json.loads(
-                await res.text()
-            ).get(
+            return json.loads(await res.text()).get(
                 "LD"
             )  # json.loads instead of res.json() because the stupid API returns the stuff as text/html
 
